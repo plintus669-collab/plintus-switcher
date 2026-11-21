@@ -80,3 +80,9 @@ sudo plintus-switcher -c
 ## 👤 Автор и лицензия / Author & License
 - **Автор / Author:** Plintus669 (<plintus669@gmail.com>)
 - **Лицензия / License:** MIT (свободное использование и распространение)
+
+## ☕ Поддержать проект / Support the Project
+
+Если **Plintus Switcher** оказался полезным и сэкономил вам время, вы можете поддержать развитие этого и будущих open-source проектов для Linux:
+
+- **ETH / USDT / USDC (Ethereum / Polygon / Arbitrum / BEP20):** `0x06f165470B35E4a584B27F91E0F64E8De9e3b841`
