@@ -5,7 +5,7 @@ Release:        2%{?dist}
 Summary:        Plug-and-play Wayland keyboard layout switcher with smart selection
 License:        MIT
 Packager:       Plintus669 <plintus669@gmail.com>
-URL:            https://github.com
+URL:            https://github.com/plintus669-collab/plintus-switcher
 BuildArch:      noarch
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  libappstream-glib
