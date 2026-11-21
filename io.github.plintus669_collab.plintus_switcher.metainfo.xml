@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="console-application">
+  <id>io.github.plintus669_collab.plintus_switcher</id>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Plintus Switcher</name>
+  <name xml:lang="ru">Plintus Switcher — Переключатель раскладки</name>
+  <summary>Zero-config Wayland/KDE keyboard layout switcher (EN ↔ RU)</summary>
+  <summary xml:lang="ru">Умный переключатель раскладки клавиатуры для Fedora / KDE Plasma (Wayland)</summary>
+  <description>
+    <p>
+      A fast, lightweight, zero-config keyboard layout switcher for Fedora and KDE Plasma on Wayland.
+      Works directly at the Linux kernel level (evdev + uinput) and starts automatically after installation.
+    </p>
+    <p xml:lang="ru">
+      Лёгкий и быстрый переключатель раскладки клавиатуры без сложных настроек для Fedora и KDE Plasma (Wayland).
+      Исправляет последнее набранное слово (Pause), всю строку (Scroll Lock) или выделенный текст (EN ↔ RU) одним нажатием.
+    </p>
+  </description>
+  <url type="homepage">https://github.com</url>
+  <url type="bugtracker">https://github.com/issues</url>
+  <developer id="io.github.plintus669_collab">
+    <name>Plintus669</name>
+  </developer>
+  <provides>
+    <binary>plintus-switcher</binary>
+  </provides>
+  <keywords>
+    <keyword>keyboard</keyword>
+    <keyword>layout</keyword>
+    <keyword>switcher</keyword>
+    <keyword>wayland</keyword>
+    <keyword>kde</keyword>
+    <keyword>punto</keyword>
+    <keyword>xneur</keyword>
+  </keywords>
+  <releases>
+    <release version="2.5" date="2026-11-21">
+      <description>
+        <p>Release 2.5: instant Wayland layout switching, smart EN/RU selection replacement, and zero-config setup.</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1" />
+</component>
