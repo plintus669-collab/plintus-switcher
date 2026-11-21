@@ -1,6 +1,6 @@
 Name:           plintus-switcher
 Version:        2.5
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Plug-and-play Wayland keyboard layout switcher with smart selection
 License:        MIT
 Packager:       Plintus669 <plintus669@gmail.com>
