@@ -14,7 +14,7 @@ A lightweight, fast, zero-config keyboard layout switcher for **Fedora / KDE Pla
 - **Опциональная настройка:** при необходимости горячие клавиши и комбинацию смены раскладки можно переопределить командой `sudo plintus-switcher -c`.
 
 ### Установка (Fedora)
-Скачайте `plintus-switcher-2.5-1.fc45.noarch.rpm` из раздела **[Releases](https://github.com)** и установите двойным кликом через **KDE Discover** или в терминале:
+Скачайте `plintus-switcher-2.5-1.fc45.noarch.rpm` из раздела **[Releases](https://github.com](https://github.com/plintus669-collab/plintus-switcher/releases/tag/v2.5)** и установите двойным кликом через **KDE Discover** или в терминале:
 ```bash
 sudo dnf install ./plintus-switcher-2.5-1.fc45.noarch.rpm
 ```
@@ -29,7 +29,7 @@ sudo dnf install ./plintus-switcher-2.5-1.fc45.noarch.rpm
 - **Optional Customization:** Rebind hotkeys or system layout shortcut anytime via `sudo plintus-switcher -c`.
 
 ### Installation (Fedora)
-Download `plintus-switcher-2.5-1.fc45.noarch.rpm` from **[Releases](https://github.com)** and install via **KDE Discover** (double-click) or terminal:
+Download `plintus-switcher-2.5-1.fc45.noarch.rpm` from **[Releases](https://github.com](https://github.com/plintus669-collab/plintus-switcher/releases/tag/v2.5)** and install via **KDE Discover** (double-click) or terminal:
 ```bash
 sudo dnf install ./plintus-switcher-2.5-1.fc45.noarch.rpm
 ```
