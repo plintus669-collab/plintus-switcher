@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Plintus Switcher
+Name[ru]=Plintus Switcher — Переключатель раскладки
+Comment=Configure hotkeys for Plintus Switcher (Wayland/KDE)
+Comment[ru]=Настройка горячих клавиш Plintus Switcher (Wayland/KDE)
+Exec=sudo plintus-switcher -c
+Icon=io.github.plintus669_collab.plintus_switcher
+Terminal=true
+Categories=Utility;Settings;
+Keywords=keyboard;layout;switcher;wayland;punto;xneur;
