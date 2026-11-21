@@ -1,0 +1,369 @@
+#!/usr/bin/python3
+# Plintus Switcher 2.3 - Zero-config Wayland/KDE Keyboard Layout Switcher
+# Copyright (c) 2026 Plintus669 <plintus669@gmail.com>
+# Licensed under the MIT License
+import sys, os, time, glob, select, subprocess, configparser, evdev
+from evdev import UInput, ecodes as e
+
+CONFIG_DIR = "/etc/plintus-switcher"
+CONFIG_FILE = os.path.join(CONFIG_DIR, "config.ini")
+
+DEFAULT_CONFIG = {
+    "keyboard": "auto",
+    "key_word": "KEY_PAUSE",
+    "key_phrase": "KEY_SCROLLLOCK",
+    "switch_combo": "KEY_LEFTALT+KEY_LEFTSHIFT",
+    "delay_ms": "2"
+}
+
+EN_TO_RU = str.maketrans(
+    "qwertyuiop[]asdfghjkl;'zxcvbnm,.`QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>~@#$^&",
+    "йцукенгшщзхъфывапролджэячсмитьбюёЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮЁ\"№;:?"
+)
+RU_TO_EN = str.maketrans(
+    "йцукенгшщзхъфывапролджэячсмитьбюёЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮЁ\"№;:?",
+    "qwertyuiop[]asdfghjkl;'zxcvbnm,.`QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>~@#$^&"
+)
+
+CHAR_TO_KEY = {
+    '1': (e.KEY_1, False), '!': (e.KEY_1, True), '2': (e.KEY_2, False), '@': (e.KEY_2, True), '"': (e.KEY_2, True),
+    '3': (e.KEY_3, False), '#': (e.KEY_3, True), '№': (e.KEY_3, True), '4': (e.KEY_4, False), '$': (e.KEY_4, True), ';': (e.KEY_4, True),
+    '5': (e.KEY_5, False), '%': (e.KEY_5, True), '6': (e.KEY_6, False), '^': (e.KEY_6, True), ':': (e.KEY_6, True),
+    '7': (e.KEY_7, False), '&': (e.KEY_7, True), '?': (e.KEY_7, True), '8': (e.KEY_8, False), '*': (e.KEY_8, True),
+    '9': (e.KEY_9, False), '(': (e.KEY_9, True), '0': (e.KEY_0, False), ')': (e.KEY_0, True),
+    '-': (e.KEY_MINUS, False), '_': (e.KEY_MINUS, True), '=': (e.KEY_EQUAL, False), '+': (e.KEY_EQUAL, True),
+    'q': (e.KEY_Q, False), 'й': (e.KEY_Q, False), 'w': (e.KEY_W, False), 'ц': (e.KEY_W, False),
+    'e': (e.KEY_E, False), 'у': (e.KEY_E, False), 'r': (e.KEY_R, False), 'к': (e.KEY_R, False),
+    't': (e.KEY_T, False), 'е': (e.KEY_T, False), 'y': (e.KEY_Y, False), 'н': (e.KEY_Y, False),
+    'u': (e.KEY_U, False), 'г': (e.KEY_U, False), 'i': (e.KEY_I, False), 'ш': (e.KEY_I, False),
+    'o': (e.KEY_O, False), 'щ': (e.KEY_O, False), 'p': (e.KEY_P, False), 'з': (e.KEY_P, False),
+    '[': (e.KEY_LEFTBRACE, False), 'х': (e.KEY_LEFTBRACE, False), '{': (e.KEY_LEFTBRACE, True), 'Х': (e.KEY_LEFTBRACE, True),
+    ']': (e.KEY_RIGHTBRACE, False), 'ъ': (e.KEY_RIGHTBRACE, False), '}': (e.KEY_RIGHTBRACE, True), 'Ъ': (e.KEY_RIGHTBRACE, True),
+    'a': (e.KEY_A, False), 'ф': (e.KEY_A, False), 's': (e.KEY_S, False), 'ы': (e.KEY_S, False),
+    'd': (e.KEY_D, False), 'в': (e.KEY_D, False), 'f': (e.KEY_F, False), 'а': (e.KEY_F, False),
+    'g': (e.KEY_G, False), 'п': (e.KEY_G, False), 'h': (e.KEY_H, False), 'р': (e.KEY_H, False),
+    'j': (e.KEY_J, False), 'о': (e.KEY_J, False), 'k': (e.KEY_K, False), 'л': (e.KEY_K, False),
+    'l': (e.KEY_L, False), 'д': (e.KEY_L, False), 'ж': (e.KEY_SEMICOLON, False), 'Ж': (e.KEY_SEMICOLON, True),
+    "'": (e.KEY_APOSTROPHE, False), 'э': (e.KEY_APOSTROPHE, False), 'Э': (e.KEY_APOSTROPHE, True),
+    '`': (e.KEY_GRAVE, False), 'ё': (e.KEY_GRAVE, False), '~': (e.KEY_GRAVE, True), 'Ё': (e.KEY_GRAVE, True),
+    'z': (e.KEY_Z, False), 'я': (e.KEY_Z, False), 'x': (e.KEY_X, False), 'ч': (e.KEY_X, False),
+    'c': (e.KEY_C, False), 'с': (e.KEY_C, False), 'v': (e.KEY_V, False), 'м': (e.KEY_V, False),
+    'b': (e.KEY_B, False), 'и': (e.KEY_B, False), 'n': (e.KEY_N, False), 'т': (e.KEY_N, False),
+    'm': (e.KEY_M, False), 'ь': (e.KEY_M, False), ',': (e.KEY_COMMA, False), 'б': (e.KEY_COMMA, False),
+    '<': (e.KEY_COMMA, True), 'Б': (e.KEY_COMMA, True), '.': (e.KEY_DOT, False), 'ю': (e.KEY_DOT, False),
+    '>': (e.KEY_DOT, True), 'Ю': (e.KEY_DOT, True), '/': (e.KEY_SLASH, False),
+    ' ': (e.KEY_SPACE, False)
+}
+
+def text_to_keys(text):
+    res = []
+    for ch in text:
+        low = ch.lower()
+        if low in CHAR_TO_KEY:
+            code, sh = CHAR_TO_KEY[low]
+            res.append((code, sh or ch.isupper()))
+    return res
+
+def convert_text_layout(text):
+    ru = sum(1 for c in text if 'а' <= c.lower() <= 'я' or c in 'ёЁ')
+    en = sum(1 for c in text if 'a' <= c.lower() <= 'z')
+    return text.translate(RU_TO_EN) if ru > en else text.translate(EN_TO_RU)
+
+class WaylandSession:
+    def __init__(self):
+        self.uid = None
+        self.env = None
+        self.refresh()
+
+    def refresh(self):
+        for uid_dir in sorted(glob.glob("/run/user/*")):
+            base = os.path.basename(uid_dir)
+            if base.isdigit() and int(base) >= 1000:
+                socks = [s for s in glob.glob(os.path.join(uid_dir, "wayland-*")) if not s.endswith(".lock")]
+                if socks:
+                    self.uid = int(base)
+                    self.env = {
+                        "PATH": "/usr/bin:/bin",
+                        "XDG_RUNTIME_DIR": uid_dir,
+                        "WAYLAND_DISPLAY": os.path.basename(next(iter(socks))),
+                        "DBUS_SESSION_BUS_ADDRESS": f"unix:path={uid_dir}/bus"
+                    }
+                    return True
+        return False
+
+def load_config():
+    cfg = configparser.ConfigParser()
+    cfg["Switcher"] = DEFAULT_CONFIG.copy()
+    if os.path.exists(CONFIG_FILE):
+        cfg.read(CONFIG_FILE)
+    return cfg["Switcher"]
+
+def scan_input_devices(kbd_filter="auto"):
+    kbds, mice = [], []
+    for path in sorted(glob.glob("/dev/input/event*")):
+        try:
+            dev = evdev.InputDevice(path)
+            if "Switcher" in dev.name:
+                dev.close()
+                continue
+            keys = dev.capabilities().get(e.EV_KEY, [])
+            if e.BTN_LEFT in keys:
+                mice.append(dev)
+            elif e.KEY_A in keys and e.KEY_Z in keys and e.KEY_SPACE in keys:
+                if kbd_filter in ("", "auto") or os.path.realpath(path) == os.path.realpath(kbd_filter):
+                    kbds.append(dev)
+                else:
+                    dev.close()
+            else:
+                dev.close()
+        except Exception:
+            pass
+    return kbds, mice
+
+def detect_key(prompt_text):
+    print(f"\n{prompt_text}")
+    devices = []
+    for path in glob.glob("/dev/input/event*"):
+        try:
+            dev = evdev.InputDevice(path)
+            if "Switcher" not in dev.name and e.EV_KEY in dev.capabilities():
+                devices.append(dev)
+        except Exception:
+            pass
+    time.sleep(0.2)
+    for dev in devices:
+        while dev.read_one() is not None:
+            pass
+    while True:
+        r, _, _ = select.select(devices, [], [], 0.5)
+        for dev in r:
+            for ev in dev.read():
+                if ev.type == e.EV_KEY and ev.value == 1:
+                    k = e.KEY.get(ev.code, str(ev.code))
+                    if isinstance(k, list):
+                        k = next(iter(k))
+                    for d in devices:
+                        d.close()
+                    return k
+
+def configure():
+    if os.geteuid() != 0:
+        print("Запустите с правами администратора: sudo plintus-switcher -c")
+        sys.exit(1)
+    print("=== Настройка Plintus Switcher 2.3 ===")
+    kw = detect_key("1. Нажмите клавишу для исправления СЛОВА или ВЫДЕЛЕНИЯ (по умолчанию Pause):")
+    kp = detect_key("2. Нажмите клавишу для исправления ВСЕЙ ФРАЗЫ (по умолчанию Scroll Lock):")
+    print("\n3. Комбинация смены языка:\n   1) Alt + Shift (по умолчанию)\n   2) Win + Пробел\n   3) Caps Lock")
+    ch = input("   Введите номер [1-3] (Enter = 1): ").strip()
+    combo = "KEY_LEFTMETA+KEY_SPACE" if ch == "2" else ("KEY_CAPSLOCK" if ch == "3" else "KEY_LEFTALT+KEY_LEFTSHIFT")
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    cfg = configparser.ConfigParser()
+    cfg["Switcher"] = {"keyboard": "auto", "key_word": kw, "key_phrase": kp, "switch_combo": combo, "delay_ms": "2"}
+    with open(CONFIG_FILE, "w") as f:
+        cfg.write(f)
+    os.system("systemctl restart plintus-switcher 2>/dev/null || true")
+    print("Готово!")
+
+def run_daemon():
+    conf = load_config()
+    kbd_filter = conf.get("keyboard", "auto").strip()
+    key_word = getattr(e, conf.get("key_word", "KEY_PAUSE"), e.KEY_PAUSE)
+    key_phrase = getattr(e, conf.get("key_phrase", "KEY_SCROLLLOCK"), e.KEY_SCROLLLOCK)
+    combo_codes = [getattr(e, n.strip()) for n in conf.get("switch_combo", "KEY_LEFTALT+KEY_LEFTSHIFT").split("+") if hasattr(e, n.strip())]
+    delay = float(conf.get("delay_ms", "2")) / 1000.0
+
+    ui = UInput({e.EV_KEY: list(range(1, 250))}, name="Plintus-Wayland-Switcher")
+    wl = WaylandSession()
+    kbds, mice = scan_input_devices(kbd_filter)
+    need_rescan = False
+    buffer = []
+    shift_pressed = False
+    mod_pressed = False
+    selection_active = False
+
+    MODS = (e.KEY_LEFTSHIFT, e.KEY_RIGHTSHIFT, e.KEY_LEFTCTRL, e.KEY_RIGHTCTRL, e.KEY_LEFTALT, e.KEY_RIGHTALT)
+    IGNORE = set(MODS) | {e.KEY_CAPSLOCK, e.KEY_LEFTMETA, e.KEY_RIGHTMETA}
+    TEXT_KEYS = (
+        set(range(e.KEY_1, e.KEY_EQUAL + 1))
+        | set(range(e.KEY_Q, e.KEY_RIGHTBRACE + 1))
+        | set(range(e.KEY_A, e.KEY_GRAVE + 1))
+        | set(range(e.KEY_BACKSLASH, e.KEY_SLASH + 1))
+        | {e.KEY_SPACE}
+    )
+    ARROWS = {e.KEY_LEFT, e.KEY_RIGHT, e.KEY_UP, e.KEY_DOWN, e.KEY_HOME, e.KEY_END}
+
+    def release_mods():
+        for k in MODS:
+            ui.write(e.EV_KEY, k, 0)
+        ui.syn()
+
+    def tap_combo(mod, key):
+        ui.write(e.EV_KEY, mod, 1)
+        ui.write(e.EV_KEY, key, 1)
+        ui.write(e.EV_KEY, key, 0)
+        ui.write(e.EV_KEY, mod, 0)
+        ui.syn()
+
+    def switch_layout():
+        if wl.uid or wl.refresh():
+            try:
+                res = subprocess.run(
+                    ["gdbus", "call", "--session", "--dest", "org.kde.keyboard",
+                     "--object-path", "/Layouts", "--method", "org.kde.KeyboardLayouts.switchToNextLayout"],
+                    env=wl.env, user=wl.uid, capture_output=True, timeout=0.1
+                )
+                if res.returncode == 0:
+                    return
+            except Exception:
+                wl.refresh()
+        for c in combo_codes:
+            ui.write(e.EV_KEY, c, 1)
+        ui.syn()
+        time.sleep(0.015)
+        for c in reversed(combo_codes):
+            ui.write(e.EV_KEY, c, 0)
+        ui.syn()
+        time.sleep(0.02)
+
+    def fix_selection():
+        if not (wl.uid or wl.refresh()):
+            return False
+        try:
+            res_p = subprocess.run(["wl-paste", "-p", "-n"], env=wl.env, user=wl.uid, capture_output=True, text=True, timeout=0.15)
+            sel = res_p.stdout if res_p.returncode == 0 else ""
+        except Exception:
+            sel = ""
+        if not sel or not sel.strip():
+            return False
+        converted = convert_text_layout(sel)
+        try:
+            subprocess.Popen(
+                ["wl-copy"], stdin=subprocess.PIPE, env=wl.env, user=wl.uid,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            ).communicate(input=converted.encode("utf-8"), timeout=0.25)
+            subprocess.run(["wl-copy", "-p", "-c"], env=wl.env, user=wl.uid, timeout=0.15)
+        except Exception:
+            return False
+        release_mods()
+        switch_layout()
+        time.sleep(0.02)
+        tap_combo(e.KEY_LEFTCTRL, e.KEY_V)
+        buffer.clear()
+        if '\n' not in converted:
+            buffer.extend(text_to_keys(converted))
+        return True
+
+    def retype(keys):
+        if not keys:
+            return
+        release_mods()
+        time.sleep(0.01)
+        for _ in range(len(keys)):
+            ui.write(e.EV_KEY, e.KEY_BACKSPACE, 1)
+            ui.write(e.EV_KEY, e.KEY_BACKSPACE, 0)
+            ui.syn()
+            if delay > 0:
+                time.sleep(delay)
+        switch_layout()
+        for code, sh in keys:
+            if sh:
+                ui.write(e.EV_KEY, e.KEY_LEFTSHIFT, 1)
+            ui.write(e.EV_KEY, code, 1)
+            ui.write(e.EV_KEY, code, 0)
+            if sh:
+                ui.write(e.EV_KEY, e.KEY_LEFTSHIFT, 0)
+            ui.syn()
+            if delay > 0:
+                time.sleep(delay)
+
+    while True:
+        if need_rescan or not kbds:
+            for d in kbds + mice:
+                try:
+                    d.close()
+                except Exception:
+                    pass
+            kbds, mice = scan_input_devices(kbd_filter)
+            need_rescan = False
+            if not kbds:
+                time.sleep(1.0)
+                continue
+
+        r, _, _ = select.select(kbds + mice, [], [], 2.0)
+        for dev in r:
+            try:
+                events = list(dev.read())
+            except OSError:
+                need_rescan = True
+                continue
+
+            if dev in mice:
+                for ev in events:
+                    if ev.type == e.EV_KEY and ev.code == e.BTN_LEFT:
+                        if ev.value == 1:
+                            buffer.clear()
+                            selection_active = False
+                        elif ev.value == 0:
+                            selection_active = True
+                continue
+
+            for ev in events:
+                if ev.type != e.EV_KEY:
+                    continue
+                code, val = ev.code, ev.value
+
+                if code in (e.KEY_LEFTSHIFT, e.KEY_RIGHTSHIFT):
+                    shift_pressed = (val in (1, 2))
+                    continue
+                if code in (e.KEY_LEFTALT, e.KEY_RIGHTALT, e.KEY_LEFTCTRL, e.KEY_RIGHTCTRL):
+                    mod_pressed = (val in (1, 2))
+                    continue
+                if val != 1:
+                    continue
+
+                if (shift_pressed and code in ARROWS) or (mod_pressed and code == e.KEY_A):
+                    selection_active = True
+                    buffer.clear()
+                    continue
+
+                if mod_pressed and code not in (key_word, key_phrase):
+                    buffer.clear()
+                    selection_active = False
+                    continue
+
+                if code in (key_word, key_phrase) and selection_active:
+                    selection_active = False
+                    if fix_selection():
+                        continue
+
+                if code == key_word:
+                    idx = len(buffer) - 1
+                    while idx >= 0 and next(iter(buffer[idx])) == e.KEY_SPACE:
+                        idx -= 1
+                    start = idx
+                    while start >= 0 and next(iter(buffer[start])) != e.KEY_SPACE:
+                        start -= 1
+                    word = buffer[start + 1:]
+                    if word:
+                        retype(word)
+                elif code == key_phrase:
+                    if buffer:
+                        retype(buffer)
+                elif code == e.KEY_BACKSPACE:
+                    selection_active = False
+                    if buffer:
+                        buffer.pop()
+                elif code in TEXT_KEYS:
+                    selection_active = False
+                    buffer.append((code, shift_pressed))
+                elif code not in IGNORE:
+                    selection_active = False
+                    buffer.clear()
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1 and next(iter(sys.argv[1:])) in ("-c", "--configure"):
+        configure()
+    elif len(sys.argv) > 1 and next(iter(sys.argv[1:])) in ("-h", "--help"):
+        print("Использование: sudo plintus-switcher -c")
+    else:
+        run_daemon()

@@ -1,0 +1,12 @@
+[Unit]
+Description=Plintus Wayland Keyboard Layout Switcher 2.0
+After=systemd-user-sessions.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/bin/plintus-switcher
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
