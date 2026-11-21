@@ -1,6 +1,6 @@
 Name:           plintus-switcher
 Version:        2.5
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Plug-and-play Wayland keyboard layout switcher with smart selection
 License:        MIT
 Packager:       Plintus669 <plintus669@gmail.com>
@@ -16,6 +16,7 @@ Source1:        plintus-switcher.service
 Source2:        io.github.plintus669_collab.plintus_switcher.metainfo.xml
 Source3:        io.github.plintus669_collab.plintus_switcher.svg
 Source4:        io.github.plintus669_collab.plintus_switcher.desktop
+Source5:        io.github.plintus669_collab.plintus_switcher.png
 
 %description
 Zero-config Wayland/KDE keyboard layout switcher created by Plintus669 <plintus669@gmail.com>.
@@ -29,6 +30,7 @@ cp -p %{SOURCE1} .
 cp -p %{SOURCE2} .
 cp -p %{SOURCE3} .
 cp -p %{SOURCE4} .
+cp -p %{SOURCE5} .
 
 %install
 mkdir -p %{buildroot}%{_bindir}
@@ -36,11 +38,13 @@ mkdir -p %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}%{_sysconfdir}/plintus-switcher
 mkdir -p %{buildroot}%{_metainfodir}
 mkdir -p %{buildroot}%{_datadir}/icons/hicolor/scalable/apps
+mkdir -p %{buildroot}%{_datadir}/icons/hicolor/64x64/apps
 mkdir -p %{buildroot}%{_datadir}/applications
 install -m 0755 plintus-switcher %{buildroot}%{_bindir}/plintus-switcher
 install -m 0644 plintus-switcher.service %{buildroot}%{_unitdir}/plintus-switcher.service
 install -m 0644 io.github.plintus669_collab.plintus_switcher.metainfo.xml %{buildroot}%{_metainfodir}/io.github.plintus669_collab.plintus_switcher.metainfo.xml
 install -m 0644 io.github.plintus669_collab.plintus_switcher.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/io.github.plintus669_collab.plintus_switcher.svg
+install -m 0644 io.github.plintus669_collab.plintus_switcher.png %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/io.github.plintus669_collab.plintus_switcher.png
 install -m 0644 io.github.plintus669_collab.plintus_switcher.desktop %{buildroot}%{_datadir}/applications/io.github.plintus669_collab.plintus_switcher.desktop
 
 %check
@@ -63,9 +67,13 @@ systemctl enable --now plintus-switcher.service >/dev/null 2>&1 || :
 %dir %{_sysconfdir}/plintus-switcher
 %{_metainfodir}/io.github.plintus669_collab.plintus_switcher.metainfo.xml
 %{_datadir}/icons/hicolor/scalable/apps/io.github.plintus669_collab.plintus_switcher.svg
+%{_datadir}/icons/hicolor/64x64/apps/io.github.plintus669_collab.plintus_switcher.png
 %{_datadir}/applications/io.github.plintus669_collab.plintus_switcher.desktop
 
 %changelog
+* Sat Nov 21 2026 Plintus669 <plintus669@gmail.com> - 2.5-4
+- Add 64x64 PNG icon for COPR AppStream metadata generator (KDE Discover)
+
 * Sat Nov 21 2026 Plintus669 <plintus669@gmail.com> - 2.5-3
 - Add desktop entry and switch AppStream component to desktop-application for KDE Discover
 
