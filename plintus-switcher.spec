@@ -6,7 +6,8 @@ License:        MIT
 Packager:       Plintus669 <plintus669@gmail.com>
 URL:            https://github.com
 BuildArch:      noarch
-Requires:       python3, python3-evdev, wl-clipboard
+BuildRequires:  systemd-rpm-macros
+Requires:       python3, python3-evdev, wl-clipboard, systemd
 
 Source0:        plintus-switcher
 Source1:        plintus-switcher.service
@@ -17,6 +18,7 @@ Auto-detects keyboards and mice, starts immediately on install, and fixes
 selected text (EN <-> RU) or last typed word/phrase with a single key press.
 
 %prep
+%setup -c -T
 cp -p %{SOURCE0} .
 cp -p %{SOURCE1} .
 
@@ -28,15 +30,14 @@ install -m 0755 plintus-switcher %{buildroot}%{_bindir}/plintus-switcher
 install -m 0644 plintus-switcher.service %{buildroot}%{_unitdir}/plintus-switcher.service
 
 %post
-systemctl daemon-reload >/dev/null 2>&1 || :
+%systemd_post plintus-switcher.service
 systemctl enable --now plintus-switcher.service >/dev/null 2>&1 || :
-systemctl restart plintus-switcher.service >/dev/null 2>&1 || :
 
 %preun
-if [ $1 -eq 0 ]; then
-    systemctl stop plintus-switcher.service >/dev/null 2>&1 || :
-    systemctl disable plintus-switcher.service >/dev/null 2>&1 || :
-fi
+%systemd_preun plintus-switcher.service
+
+%postun
+%systemd_postun_with_restart plintus-switcher.service
 
 %files
 %{_bindir}/plintus-switcher
