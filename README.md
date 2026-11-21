@@ -1,10 +1,4 @@
 # ⌨️ Plintus Switcher 2.5
-
-![Fedora](https://shields.io)
-![License](https://shields.io)
-![Release](https://shields.io)
-![Copr](https://shields.io)
-
 **Умный и молниеносный переключатель раскладки клавиатуры для Fedora / KDE Plasma (Wayland).**
 Никаких костылей с X11 и сложных настроек: установили пакет — и он уже работает в фоне.
 
