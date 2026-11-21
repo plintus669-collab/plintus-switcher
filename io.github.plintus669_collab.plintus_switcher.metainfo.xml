@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="console-application">
+<component type="desktop-application">
   <id>io.github.plintus669_collab.plintus_switcher</id>
   <metadata_license>MIT</metadata_license>
   <project_license>MIT</project_license>
@@ -17,6 +17,7 @@
       Исправляет последнее набранное слово (Pause), всю строку (Scroll Lock) или выделенный текст (EN ↔ RU) одним нажатием.
     </p>
   </description>
+  <launchable type="desktop-id">io.github.plintus669_collab.plintus_switcher.desktop</launchable>
   <url type="homepage">https://github.com</url>
   <url type="bugtracker">https://github.com/issues</url>
   <developer id="io.github.plintus669_collab">
