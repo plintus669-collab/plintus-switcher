@@ -1,4 +1,3 @@
-URL:            https://github.com/plintus669-collab/plintus-switcher
 Name:           plintus-switcher
 Version:        2.5
 Release:        2%{?dist}
