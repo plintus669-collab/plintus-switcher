@@ -18,8 +18,8 @@
     </p>
   </description>
   <launchable type="desktop-id">io.github.plintus669_collab.plintus_switcher.desktop</launchable>
-  <url type="homepage">https://github.com</url>
-  <url type="bugtracker">https://github.com/issues</url>
+  <url type="homepage">https://github.com/plintus669-collab/plintus-switcher</url>
+  <url type="bugtracker">https://github.com/plintus669-collab/plintus-switcher/issues</url>
   <developer id="io.github.plintus669_collab">
     <name>Plintus669</name>
   </developer>
