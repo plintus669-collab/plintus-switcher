@@ -1,4 +1,4 @@
-cat << 'EOF' | wl-copy
+URL:            https://github.com/plintus669-collab/plintus-switcher
 Name:           plintus-switcher
 Version:        2.5
 Release:        2%{?dist}
@@ -65,5 +65,3 @@ systemctl enable --now plintus-switcher.service >/dev/null 2>&1 || :
 
 * Sat Nov 21 2026 Plintus669 <plintus669@gmail.com> - 2.5-1
 - Release 2.5: instant Wayland layout switching, smart EN/RU selection replacement, and zero-config setup
-EOF
-echo "Готово! Нажмите Ctrl+V в редакторе plintus-switcher.spec на GitHub."
