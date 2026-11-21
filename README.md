@@ -3,9 +3,10 @@
 ![Fedora](https://shields.io)
 ![License](https://shields.io)
 ![Release](https://shields.io)
+![Copr](https://shields.io)
 
 **Умный и молниеносный переключатель раскладки клавиатуры для Fedora / KDE Plasma (Wayland).**
-Никаких костылей с X11 и сложных настроек: установили пакет в два клика — и он уже работает в фоне.
+Никаких костылей с X11 и сложных настроек: установили пакет — и он уже работает в фоне.
 
 **A fast, zero-config keyboard layout switcher for Fedora / KDE Plasma (Wayland).**
 Works directly at the Linux kernel level (`evdev` + `uinput`) — just install the package and start typing.
@@ -14,12 +15,20 @@ Works directly at the Linux kernel level (`evdev` + `uinput`) — just install t
 
 ## 📦 Скачать и установить / Download & Install
 
+### Вариант 1: Через официальный репозиторий Fedora COPR (рекомендуется / recommended)
+Устанавливается в две команды и автоматически обновляется вместе с системой через `dnf` и **KDE Discover**:
+```bash
+sudo dnf copr enable plintus669/plintus-switcher
+sudo dnf install plintus-switcher
+```
+
+### Вариант 2: Готовый RPM-пакет с GitHub / Direct RPM Download
 👉 **Скачать релиз / Download Release:** https://github.com/plintus669-collab/plintus-switcher/releases/tag/v2.5
 
 1. Скачайте файл **`plintus-switcher-2.5-1.fc45.noarch.rpm`** по ссылке выше.
 2. Откройте скачанный файл двойным кликом через **KDE Discover** и нажмите **«Установить»** — *на этом всё, программа уже запущена!*
 
-*(Или установите через терминал / Or install via terminal)*:
+*(Или установите локальный файл через терминал / Or install local file via terminal)*:
 ```bash
 sudo dnf install ./plintus-switcher-2.5-1.fc45.noarch.rpm
 ```
