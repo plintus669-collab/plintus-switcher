@@ -81,8 +81,11 @@ sudo plintus-switcher -c
 - **Автор / Author:** Plintus669 (<plintus669@gmail.com>)
 - **Лицензия / License:** MIT (свободное использование и распространение)
 
-## ☕ Поддержать проект / Support the Project
+## ☕ Поддержать автора / Support the Author
 
-Если **Plintus Switcher** оказался полезным и сэкономил вам время, вы можете поддержать развитие этого и будущих open-source проектов для Linux:
+Если **Plintus Switcher** сэкономил вам время и оказался полезным, вы можете поддержать развитие этого и будущих open-source проектов для Linux:
 
 - **ETH / USDT / USDC (Ethereum / Polygon / Arbitrum / BEP20):** `0x06f165470B35E4a584B27F91E0F64E8De9e3b841`
+- **Bitcoin (BTC):** `bc1q5zwqvcr2t3ps2p4kepsa7pu5xwaxs74xt2vgz8`
+- **Litecoin (LTC):** `ltc1q4f492q48y2v7ldv0vr0wvw7ln7772vvgltnkdq`
+
